@@ -22,11 +22,8 @@ def versions_from_file(filename):
             contents = f.read()
     except EnvironmentError:
         raise Exception("unable to read _version.py")
-    mo = re.search(r"version_json = '''\n(.*)'''  # END VERSION_JSON",
+    mo = re.search("version_json = '''\n(.*)'''  # END VERSION_JSON".format(f.newlines),
                    contents, re.M | re.S)
-    if not mo:
-        mo = re.search(r"version_json = '''\r\n(.*)'''  # END VERSION_JSON",
-               contents, re.M | re.S)
     if not mo:
         raise Exception("no version_json in _version.py")
     return json.loads(mo.group(1))
