@@ -14,6 +14,23 @@ from slicerator import Slicerator, pipeline, index_attr, propagate_attr
 path, _ = os.path.split(os.path.abspath(__file__))
 path = os.path.join(path, 'data')
 
+def versions_from_file(filename):
+    import re
+    import json
+    try:
+        with open(filename) as f:
+            contents = f.read()
+    except EnvironmentError:
+        raise Exception("unable to read _version.py")
+    mo = re.search(r"version_json = '''\n(.*)'''  # END VERSION_JSON",
+                   contents, re.M | re.S)
+    if not mo:
+        raise Exception("no version_json in _version.py")
+    return json.loads(mo.group(1))
+
+def test_versioneer():
+    assert versions_from_file(os.path.abspath('_slicerator_version.py'))['version'] == '0.9.7rc1'
+
 
 def assert_letters_equal(actual, expected):
     # check if both lengths are equal
